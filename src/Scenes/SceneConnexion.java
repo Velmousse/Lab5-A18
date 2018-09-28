@@ -52,9 +52,7 @@ public class SceneConnexion extends Scene{
         Button inscription = new Button("S'inscrire");
         inscription.setTranslateX(262);
         inscription.setTranslateY(295);
-        inscription.setOnAction(event -> {
-            Main.stage.setScene(SceneInscription.create());
-        });
+        inscription.setOnAction(event -> Main.setScene(SceneInscription.create()));
 
         return new Group(connexion, inscription);
     }

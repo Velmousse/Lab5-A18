@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    public static Stage stage = new Stage();
+    static Stage stage = new Stage();
 
     public static void main(String[] args) { launch(args); }
 
@@ -20,5 +20,9 @@ public class Main extends Application {
         stage.setWidth(520);
         stage.setScene(sceneConnexion);
         stage.show();
+    }
+
+    public static void setScene(Scene scene) {
+        stage.setScene(scene);
     }
 }
