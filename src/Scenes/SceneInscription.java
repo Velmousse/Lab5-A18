@@ -14,6 +14,9 @@ public class SceneInscription extends Scene {
     private static Spinner spinAge;
     private static CheckBox conditions;
 
+    private static String[] donnees = new String[6];
+    private static boolean[] valide = new boolean[6];
+
     public static Scene create() {
         return new SceneInscription(createGroup());
     }
@@ -65,19 +68,19 @@ public class SceneInscription extends Scene {
         for (int i = 0; i < 3; i++) {
             entrees[i].setTranslateX(175);
             entrees[i].setTranslateY(y);
-            switch (i) {
-                case 0: entrees[i].setPromptText("Prénom"); break;
-                case 1: entrees[i].setPromptText("Nom de famille"); break;
-                case 2: entrees[i].setPromptText("Nom d'utilisateur"); break;
-            }
             y += 55;
         }
+
+        entrees[0].setPromptText("Prénom");
+        entrees[0].textProperty().addListener((that, ov, nv) -> valide[0] = nv.isEmpty());
+
+        entrees[1].setPromptText("Nom de famille");
+        entrees[2].setPromptText("Nom d'utilisateur");
 
         for (int i = 0; i < 2; i++) {
             passwords[i].setTranslateX(175);
             passwords[i].setTranslateY(y);
             passwords[i].setPromptText("Mot de passe");
-
             y += 55;
         }
     }
@@ -115,6 +118,7 @@ public class SceneInscription extends Scene {
         Button inscription = new Button("S'inscrire");
         inscription.setTranslateX(175);
         inscription.setTranslateY(435);
+        inscription.setOnAction(event -> inscription());
 
         Button effacer = new Button("Effacer");
         effacer.setTranslateX(241);
@@ -132,8 +136,12 @@ public class SceneInscription extends Scene {
     private static void reset() {
         for (TextField entree : entrees) { entree.setText(null); }
         for (PasswordField password : passwords) { password.setText(null); }
-        groupeBoutons.setUserData(null);
-        spinAge.setUserData(18);
+        groupeBoutons.selectToggle(null);
+        spinAge.getValueFactory().setValue(18);
         conditions.setSelected(false);
+    }
+
+    private static void inscription() {
+
     }
 }
