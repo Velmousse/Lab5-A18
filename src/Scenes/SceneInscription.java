@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 
 public class SceneInscription extends Scene {
     private static TextField[] entrees = new TextField[3];
@@ -16,6 +17,8 @@ public class SceneInscription extends Scene {
 
     private static String[] donnees = new String[6];
     private static boolean[] valide = new boolean[6];
+
+    private static Label erreur = new Label();
 
     public static Scene create() {
         return new SceneInscription(createGroup());
@@ -111,7 +114,12 @@ public class SceneInscription extends Scene {
         conditions.setTranslateX(175);
         conditions.setTranslateY(400);
 
-        return new Group(h, f, a, spinAge, conditions);
+        erreur.setTextFill(Color.RED);
+        erreur.setTranslateX(175);
+        erreur.setTranslateY(475);
+        erreur.setVisible(false);
+
+        return new Group(h, f, a, spinAge, conditions, erreur);
     }
 
     private static Group createBoutons() {
@@ -142,6 +150,40 @@ public class SceneInscription extends Scene {
     }
 
     private static void inscription() {
+        erreur.setVisible(true);
 
+        if (entrees[0].textProperty().isEmpty().get()) {
+            erreur.setText("Prénom manquant");
+        }
+        else if (entrees[1].textProperty().isEmpty().get()) {
+            erreur.setText("Nom de famille manquant");
+        }
+        else if (entrees[2].textProperty().isEmpty().get()) {
+            erreur.setText("Nom d'utilisateur manquant");
+        }
+        else if (passwords[0].textProperty().isEmpty().get()) {
+            erreur.setText("Mot de passe manquant");
+        }
+        else if (passwords[1].textProperty().isEmpty().get()) {
+            erreur.setText("Veuillez confirmer le mot de passe");
+        }
+        else if (!passwords[0].textProperty().get().equals(passwords[1].textProperty().get())) {
+            erreur.setText("Les mots de passe ne correspondent pas");
+        }
+        else if (groupeBoutons.getSelectedToggle() == null) {
+            erreur.setText("Aucun genre sélectionné");
+        }
+        else if (!conditions.isSelected()) {
+            erreur.setText("Les conditions d'utilisation ne sont pas acceptées");
+        }
+        else {
+            erreur.setVisible(false);
+
+            donnees[0] = entrees[0].textProperty().get();
+            donnees[1] = entrees[1].textProperty().get();
+            donnees[2] = entrees[2].textProperty().get();
+            donnees[3] = org.apache.commons.codec.digest.DigestUtils.sha256Hex(passwords[0].textProperty().get());
+
+        }
     }
 }
