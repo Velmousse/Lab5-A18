@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     static Stage stage = new Stage();
+    public static Data data = new Data();
 
     public static void main(String[] args) { launch(args); }
 

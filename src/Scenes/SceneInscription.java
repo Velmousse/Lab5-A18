@@ -6,6 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class SceneInscription extends Scene {
     private static TextField[] entrees = new TextField[3];
@@ -15,8 +21,7 @@ public class SceneInscription extends Scene {
     private static Spinner spinAge;
     private static CheckBox conditions;
 
-    private static String[] donnees = new String[6];
-    private static boolean[] valide = new boolean[6];
+    private static ArrayList<String> donnees = new ArrayList<>(6);
 
     private static Label erreur = new Label();
 
@@ -75,8 +80,6 @@ public class SceneInscription extends Scene {
         }
 
         entrees[0].setPromptText("Prénom");
-        entrees[0].textProperty().addListener((that, ov, nv) -> valide[0] = nv.isEmpty());
-
         entrees[1].setPromptText("Nom de famille");
         entrees[2].setPromptText("Nom d'utilisateur");
 
@@ -179,11 +182,36 @@ public class SceneInscription extends Scene {
         else {
             erreur.setVisible(false);
 
-            donnees[0] = entrees[0].textProperty().get();
-            donnees[1] = entrees[1].textProperty().get();
-            donnees[2] = entrees[2].textProperty().get();
-            donnees[3] = org.apache.commons.codec.digest.DigestUtils.sha256Hex(passwords[0].textProperty().get());
+            donnees.add(entrees[0].textProperty().get());
+            donnees.add(entrees[1].textProperty().get());
+            donnees.add(entrees[2].textProperty().get());
 
+            try { donnees.add(hash(passwords[0].textProperty().get())); }
+            catch (NoSuchAlgorithmException e) { }
+
+            if (groupeBoutons.getSelectedToggle() == groupeBoutons.getToggles().get(0))
+                donnees.add("H");
+            else if (groupeBoutons.getSelectedToggle() == groupeBoutons.getToggles().get(1))
+                donnees.add("F");
+            else
+                donnees.add("A");
+
+            donnees.add(spinAge.getValue().toString());
+
+            String csv = donnees.stream().collect(Collectors.joining(","));
+            donnees.clear();
+
+            Main.data.writeData(csv);
+            Main.data.saveData();
+            Main.setScene(SceneConnexion.create());
         }
+    }
+
+    public static String hash(String password) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] digest = md.digest(password.getBytes(StandardCharsets.UTF_8));
+        String sha256 = DatatypeConverter.printHexBinary(digest).toLowerCase();
+
+        return sha256;
     }
 }
