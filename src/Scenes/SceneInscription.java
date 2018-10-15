@@ -180,13 +180,11 @@ public class SceneInscription extends Scene {
             erreur.setText("Les conditions d'utilisation ne sont pas acceptées");
         }
         else {
-            erreur.setVisible(false);
-
             donnees.add(entrees[0].textProperty().get());
             donnees.add(entrees[1].textProperty().get());
             donnees.add(entrees[2].textProperty().get());
 
-            try { donnees.add(hash(passwords[0].textProperty().get())); }
+            try { donnees.add(Main.hash(passwords[0].textProperty().get())); }
             catch (NoSuchAlgorithmException e) { }
 
             if (groupeBoutons.getSelectedToggle() == groupeBoutons.getToggles().get(0))
@@ -198,20 +196,25 @@ public class SceneInscription extends Scene {
 
             donnees.add(spinAge.getValue().toString());
 
-            String csv = donnees.stream().collect(Collectors.joining(","));
-            donnees.clear();
+            boolean pass = true;
 
-            Main.data.writeData(csv);
-            Main.data.saveData();
-            Main.setScene(SceneConnexion.create());
+            for (String username : Main.data.readValues(true)) {
+                if (entrees[2].textProperty().get().equals(username)) {
+                    erreur.setText("Nom d'utilisateur déjà entré");
+                    donnees.clear();
+                    pass = false;
+                }
+            }
+
+            if (pass) {
+                erreur.setVisible(false);
+
+                String csv = donnees.stream().collect(Collectors.joining(","));
+                donnees.clear();
+
+                Main.data.writeData(csv);
+                Main.setScene(SceneConnexion.create());
+            }
         }
-    }
-
-    public static String hash(String password) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] digest = md.digest(password.getBytes(StandardCharsets.UTF_8));
-        String sha256 = DatatypeConverter.printHexBinary(digest).toLowerCase();
-
-        return sha256;
     }
 }
