@@ -1,8 +1,6 @@
 package Main;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Data {
@@ -27,12 +25,6 @@ public class Data {
             }
         }
         catch (IOException e) {}
-
-        try {
-            sortie = new PrintWriter(new BufferedWriter(new FileWriter("users.csv")));
-        }
-        catch (IOException e) { }
-
     }
 
     public void writeData(String texte) {
@@ -40,6 +32,11 @@ public class Data {
     }
 
     public void saveData() {
+        try {
+            sortie = new PrintWriter(new BufferedWriter(new FileWriter("users.csv")));
+        }
+        catch (IOException e) { }
+
         for (String value : liste) {
             sortie.println(value);
         }

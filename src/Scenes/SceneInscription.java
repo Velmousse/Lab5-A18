@@ -210,6 +210,7 @@ public class SceneInscription extends Scene {
                 donnees.clear();
 
                 Main.data.writeData(csv);
+                Main.data.saveData();
                 Main.setScene(SceneConnexion.create());
             }
         }

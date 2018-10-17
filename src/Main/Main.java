@@ -26,7 +26,6 @@ public class Main extends Application {
         stage.setWidth(520);
         stage.setScene(sceneConnexion);
         stage.show();
-        stage.setOnHiding(event -> data.saveData());
     }
 
     public static void setScene(Scene scene) {
